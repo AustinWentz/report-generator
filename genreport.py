@@ -120,6 +120,11 @@ def createRep(name):
 
 	with open('Monthly_report.txt', 'a') as repFile:
 		repFile.write(name + "'s sample average per hour for the month was: " + str(monthlyAccAverage) + "\n")
+	
+	#file upkeep
+	for day in range(1,32):
+		os.system("rm day" + str(day) + ".txt")
+	f.close()
 
 	return monthlyAccAverage
 
@@ -184,5 +189,6 @@ def sortByHour(reqs):
 def main():
 	genEmpReqs()
 	genEmpReps()
+	delFiles()
 	print "...DONE"
 main()
