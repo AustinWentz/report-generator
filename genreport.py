@@ -1,14 +1,14 @@
 #############
 # Created by Austin Wentz
 # ESA Labs
-# Last Updated: May 13th, 2016
-############
+# Last Updated: May 16th, 2016
+#############
 import os
 import subprocess
 from datetime import datetime
 
 #list of employees
-employees = ["AC" , "CJ", "CM", "DA", "DF", "JD", "JL", "RR", "SC", "TS", "TR", "TK"]
+employees = ["AC" , "CJ", "CM", "DA", "DF", "JD", "JL", "JM", "RR", "SC", "TS", "TR", "TK"]
 #file to be read from
 report_file = raw_input("Please enter the name of the file you would like the report to be generated on: (ex. april.txt) ")
 
@@ -59,6 +59,8 @@ def createRep(name):
 	
 	f = open(name + '_report.txt', 'wt')
 
+	f.write("Employee: " + name + "\n\n")
+	f.write("------Monthly Stats------\n")
 	f.write("AU Validity: " + str(int(numVal)) + "\n")
 	f.write("Billables processed: " + str(int(totalTox - numNonBillables)) + "\n")
 	f.write("Non-Billables processed:  " + str(int(numNonBillables)) + "\n")
@@ -67,7 +69,7 @@ def createRep(name):
 	
 	if (totalTox != 0):
 		f.write("Percentage of Tox samples rejected: " + str(percentRejected) + "%\n")
-	f.write("------Day breakdown-----\n")
+	f.write("\n------Day breakdown------\n")
 
 	DaysWorked = []
 	#Day Breakdown
