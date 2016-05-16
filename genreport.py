@@ -8,7 +8,7 @@ import subprocess
 from datetime import datetime
 
 #list of employees
-employees = ["AC" , "CJ", "CM", "DA", "DF", "JD", "JL", "KJ", "RR", "SC", "TS", "TR", "TK"]
+employees = ["AC" , "CJ", "CM", "DA", "DF", "JD", "JL", "RR", "SC", "TS", "TR", "TK"]
 #file to be read from
 report_file = raw_input("Please enter the name of the file you would like the report to be generated on: (ex. april.txt) ")
 
@@ -97,6 +97,7 @@ def createRep(name):
 		sortedLines = sortByHour(lines)
 
 		hoursAcc = getHoursAcc(sortedLines)
+		convertedHours = hourConvert(sortedLines)
 		samplesProcessed = float(len(lines))
 
 		if (hoursAcc != 0):
@@ -104,7 +105,15 @@ def createRep(name):
 			dailyAccAverage.append(averageAcc)
 		else:
 			averageAcc = 0
+		
+		checkedHours = {'5': 0, '6': 0, '7': 0, '8': 0, '9': 0, '10': 0, '11': 0, '12': 0, '13' : 0, '14': 0, '15': 0, '16': 0, '17': 0, '18': 0, '19': 0}
 
+		#hour report analyzer
+		for con in convertedHours:
+			for key in checkedHours:
+				if (key == con):
+					checkedHours[key] = checkedHours[key] + 1
+		
 		f.write("\n")
 		f.write("/////Day " + str(day) + "/////\n")
 		f.write("Hours spent accessioning: " + str(hoursAcc) + "\n")
@@ -114,7 +123,16 @@ def createRep(name):
 		#f.write("Billables processed: " + str(int(getTotalTox('day' + str(day)) - getNonBillables('day' + str(day)))) + "\n")
 		#f.write("Non-Billables processed: " + str(int(getNonBillables('day' + str(day)))) + "\n")
 		#f.write("Rejected Tox: " + str(int(getRejected('day' + str(day)))) + "\n")
-	
+		f.write("----Hour breakdown----\n")
+		
+		#hour calculator
+		for hour in range(5,20):
+			if (hour <= 12):
+				f.write(str(hour) + " AM: " + str(checkedHours[str(hour)]) + "\n")
+			else:
+				f.write(str(hour - 12) + " PM: " + str(checkedHours[str(hour)]) + "\n")
+
+	#daily/monthly average	
 	sumOfAvg = 0.0
 	for average in dailyAccAverage:
 		sumOfAvg = sumOfAvg + average
@@ -189,6 +207,27 @@ def sortByHour(reqs):
 	formatedHours = sorted([datetime.strptime(regex_obtained_str, '%I:%M %p') for regex_obtained_str in hours])
 	finalSorted = [hour.strftime('%I:%M %p') for hour in formatedHours]
 	return finalSorted
+
+#converts hours AM-PM to 24 hour clock
+def hourConvert(hours):
+
+	convertedHours = []
+	for hour in hours:
+		if (hour[6:7] == 'P'):
+			temp = 12 + (int(hour[0:2]) % 12)
+			convertedHours.append(str(temp))
+		else:
+			temp = int(hour[0:2])
+			convertedHours.append(str(temp))
+	
+	strippedHours = []
+	for hour in convertedHours:
+		if (hour[0:1] == '0'):
+			strippedHours.append(str(hour[1:2]))
+		else:
+			strippedHours.append(str(hour[0:2]))
+	
+	return strippedHours
 
 #driver
 def main():
