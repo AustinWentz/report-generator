@@ -1,7 +1,7 @@
 ################################
 # Created by Austin Wentz      #
 # ESA Labs		       #
-# Last Updated: May 16th, 2016 #
+# Last Updated: May 17th, 2016 #
 ################################
 import os
 import subprocess
@@ -67,7 +67,7 @@ def createRep(name):
 	f.write("Non-Billables processed:  " + str(int(numNonBillables)) + "\n")
 	#f.write("Rejected Tox: " + str(int(numRejected)) + "\n")
 	f.write("Total Tox samples processed: " + str(int(totalTox)) + "\n")
-	f.write("Total pGx samples processed: " + str(int(totalPgx)) + "\n")
+	f.write("Total PGx samples processed: " + str(int(totalPgx)) + "\n")
 	
 	#if (totalTox != 0):
 	#	f.write("Percentage of Tox samples rejected: " + str(percentRejected) + "%\n")
