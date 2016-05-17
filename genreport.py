@@ -1,8 +1,8 @@
-#############
-# Created by Austin Wentz
-# ESA Labs
-# Last Updated: May 16th, 2016
-#############
+################################
+# Created by Austin Wentz      #
+# ESA Labs		       #
+# Last Updated: May 16th, 2016 #
+################################
 import os
 import subprocess
 from datetime import datetime
@@ -51,24 +51,26 @@ def genEmpReps():
 def createRep(name):
 	numVal = getValidities(name)
 	numNonBillables = getNonBillables(name)
-	numRejected = getRejected(name)
+	#numRejected = getRejected(name)
 	totalTox = getTotalTox(name)
+	totalPgx = getTotalPgx(name)
 	
-	if (totalTox != 0):
-		percentRejected = (numRejected / totalTox) * 100
+	#if (totalTox != 0):
+	#	percentRejected = (numRejected / totalTox) * 100
 	
 	f = open(name + '_report.txt', 'wt')
 
 	f.write("Employee: " + name + "\n\n")
 	f.write("------Monthly Stats------\n")
 	f.write("AU Validity: " + str(int(numVal)) + "\n")
-	f.write("Billables processed: " + str(int(totalTox - numNonBillables)) + "\n")
+	f.write("Billables processed: " + str(int((totalTox + totalPgx) - numNonBillables)) + "\n")
 	f.write("Non-Billables processed:  " + str(int(numNonBillables)) + "\n")
-	f.write("Rejected Tox: " + str(int(numRejected)) + "\n")
+	#f.write("Rejected Tox: " + str(int(numRejected)) + "\n")
 	f.write("Total Tox samples processed: " + str(int(totalTox)) + "\n")
+	f.write("Total pGx samples processed: " + str(int(totalPgx)) + "\n")
 	
-	if (totalTox != 0):
-		f.write("Percentage of Tox samples rejected: " + str(percentRejected) + "%\n")
+	#if (totalTox != 0):
+	#	f.write("Percentage of Tox samples rejected: " + str(percentRejected) + "%\n")
 	f.write("\n------Day breakdown------\n")
 
 	DaysWorked = []
@@ -172,6 +174,11 @@ def getRejected(emp):
 def getTotalTox(emp):
 	num = subprocess.check_output('grep "Tox" ' + emp + ".txt | wc -l | bc", shell=True)
 	return float(num[:-1])
+
+#gets total number of Pgx samples
+def getTotalPgx(emp):
+	num = subprocess.check_output('grep "PGx" ' + emp + ".txt | wc -l | bc", shell = True)
+	return int(num[:-1])
 
 #file cleanup
 def delFiles():
