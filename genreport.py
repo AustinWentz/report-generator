@@ -9,8 +9,9 @@ from datetime import datetime
 
 #list of employees
 employees = ["AC" , "CJ", "CM", "DA", "DF", "JD", "JL", "JM", "RR", "SC", "TS", "TR", "TK"]
+
 #file to be read from
-report_file = raw_input("Please enter the name of the file you would like the report to be generated on: (ex. april.txt) ")
+report_file = raw_input("Please enter the name of the file you would like the report to be generated on (ex. april.txt): ")
 
 #generates <employee>.txt files
 def genEmpReqs():
@@ -215,6 +216,7 @@ def sortByHour(reqs):
 		hours.append(req[11:19])
 	formatedHours = sorted([datetime.strptime(regex_obtained_str, '%I:%M %p') for regex_obtained_str in hours])
 	finalSorted = [hour.strftime('%I:%M %p') for hour in formatedHours]
+	
 	return finalSorted
 
 #converts hours AM-PM to 24 hour clock
