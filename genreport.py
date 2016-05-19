@@ -8,7 +8,7 @@ import subprocess
 from datetime import datetime
 
 #list of employees
-employees = ["AC" , "CJ", "CM", "DA", "DF", "JD", "JL", "JM", "RR", "SC", "TS", "TR", "TK"]
+employees = ["AC" , "CJ", "CM", "DA", "DF", "JD", "JL", "JM", "QB", "RR", "SC", "TS", "TR", "TK"]
 
 #files to be read from
 report_file = raw_input("Please enter the name of the file you would like the report to be generated on (ex. april.txt): ")
@@ -57,11 +57,12 @@ def genEmpReps():
 		repFile.write('The lowest performing employee of the month based on average accessions per hour was ' + lowestPerformingEmployee + ' with and average of ' + str(lowestAcc) + ' samples proccesed per hour.\n')
 		repFile.write('---------------------\n')
 		repFile.write('Total mistakes made this month: ' + str(int(mistakes)) + '\n')
-		repFile.write('Total number of samples accessioned: ' + str(allAcc) + '\n')
+		repFile.write('Total number of samples accessioned (AU + Tox + PGx): ' + str(allAcc) + '\n')
 		
 		#writes mistake percentages
 		if (allAcc != 0):
 			repFile.write("Total percentage of samples that had mistakes: " + str((mistakes/allAcc) * 100) + "%\n")
+
 #creates <employee_report>.txt files and generates useful statistics
 def createRep(name):
 	numVal = getValidities(name)
