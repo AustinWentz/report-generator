@@ -1,7 +1,7 @@
 ################################
 # Created by Austin Wentz      #
 # ESA Labs		       #
-# Last Updated: May 18th, 2016 #
+# Last Updated: May 19th, 2016 #
 ################################
 import os
 import subprocess
@@ -10,18 +10,23 @@ from datetime import datetime
 #list of employees
 employees = ["AC" , "CJ", "CM", "DA", "DF", "JD", "JL", "JM", "RR", "SC", "TS", "TR", "TK"]
 
-#file to be read from
+#files to be read from
 report_file = raw_input("Please enter the name of the file you would like the report to be generated on (ex. april.txt): ")
+mistakes_file = raw_input("Please enter name of mistakes file associated with the report file (ex. mistakes.txt), if you dont have one type 'none': ")
 
 #generates <employee>.txt files
 def genEmpReqs():
 	print "Loading employee profiles..."
+
+	#creating employee.txt files for temporary use
 	for employee in employees:
 		os.system('grep "' + employee + '" ' + report_file + " > " + employee + ".txt")
 
 #calls createRep() for every employee
 def genEmpReps():
 	monthlyAcc = []
+	mistakes = float(getAllMistakes())
+	allAcc = getAllAcc()
 	highestPerformingEmployee = "None"
 	lowestPerformingEmployee = "None"
 	highestAcc = 0.0
@@ -29,10 +34,12 @@ def genEmpReps():
 
 	print "Generating employee reports..."
 	
+	#adding each employee monthly accession average to a list
 	index = 0;
 	for employee in employees:
 		monthlyAcc.append(createRep(employee))
-		
+	
+	#finding the highest and lowest performing employee based on monthly accession averages
 	for employee in employees:
 		if (monthlyAcc[index] > highestAcc):
 			highestAcc = monthlyAcc[index]
@@ -42,23 +49,32 @@ def genEmpReps():
 			lowestAcc = monthlyAcc[index]
 			lowestPerformingEmployee = employee
 		index = index + 1
-
+	
+	#writing to Monthly_report.txt file
 	with open("Monthly_report.txt", 'a') as repFile:
 		repFile.write('---------------------\n')
 		repFile.write('The highest performing employee of the month based on average accessions per hour was ' + highestPerformingEmployee + ' with and average of ' + str(highestAcc) + ' samples proccesed per hour.\n')
 		repFile.write('The lowest performing employee of the month based on average accessions per hour was ' + lowestPerformingEmployee + ' with and average of ' + str(lowestAcc) + ' samples proccesed per hour.\n')
-
+		repFile.write('---------------------\n')
+		repFile.write('Total mistakes made this month: ' + str(int(mistakes)) + '\n')
+		repFile.write('Total number of samples accessioned: ' + str(allAcc) + '\n')
+		
+		#writes mistake percentages
+		if (allAcc != 0):
+			repFile.write("Total percentage of samples that had mistakes: " + str((mistakes/allAcc) * 100) + "%\n")
 #creates <employee_report>.txt files and generates useful statistics
 def createRep(name):
 	numVal = getValidities(name)
 	numNonBillables = getNonBillables(name)
-	#numRejected = getRejected(name)
-	totalTox = getTotalTox(name)
+	totalTox = float(getTotalTox(name))
 	totalPgx = getTotalPgx(name)
+	totalMistakes = getTotalMistakes(name)
 	
-	#if (totalTox != 0):
-	#	percentRejected = (numRejected / totalTox) * 100
+	#calculating percentage of mistakes for the employee
+	if (totalTox + totalPgx != 0):
+		percentMistakes = (totalMistakes / (totalTox + totalPgx)) * 100	
 	
+	#writing to employee_report.txt
 	f = open(name + '_report.txt', 'wt')
 
 	f.write("Employee: " + name + "\n\n")
@@ -66,16 +82,19 @@ def createRep(name):
 	f.write("AU Validity: " + str(int(numVal)) + "\n")
 	f.write("Billables processed: " + str(int((totalTox + totalPgx) - numNonBillables)) + "\n")
 	f.write("Non-Billables processed:  " + str(int(numNonBillables)) + "\n")
-	#f.write("Rejected Tox: " + str(int(numRejected)) + "\n")
 	f.write("Total Tox samples processed: " + str(int(totalTox)) + "\n")
 	f.write("Total PGx samples processed: " + str(int(totalPgx)) + "\n")
+	f.write("Total mistakes made: " + str(int(totalMistakes)) + "\n")
 	
-	#if (totalTox != 0):
-	#	f.write("Percentage of Tox samples rejected: " + str(percentRejected) + "%\n")
+	if (totalTox + totalPgx != 0):
+		f.write("Percentage of samples processed that had mistakes: " + str(percentMistakes) + "%\n")
+	
+	#breaking it down by day
 	f.write("\n------Day breakdown------\n")
 
 	DaysWorked = []
-	#Day Breakdown
+
+	#day Breakdown
 	for day in range(1,32):
 		
 		if(day < 10):
@@ -119,15 +138,12 @@ def createRep(name):
 				if (key == con):
 					checkedHours[key] = checkedHours[key] + 1
 		
+		#breaking it down by the hour	
 		f.write("\n")
 		f.write("/////Day " + str(day) + "/////\n")
 		f.write("Hours spent accessioning: " + str(hoursAcc) + "\n")
 		f.write("Samples processed: " + str(int(samplesProcessed)) + "\n")
 		f.write("Average number of samples processed per hour spent accessioning: " + str(averageAcc) + "\n")
-		#f.write("AU Validity: " + str(int(getValidities('day' + str(day)))) + "\n")
-		#f.write("Billables processed: " + str(int(getTotalTox('day' + str(day)) - getNonBillables('day' + str(day)))) + "\n")
-		#f.write("Non-Billables processed: " + str(int(getNonBillables('day' + str(day)))) + "\n")
-		#f.write("Rejected Tox: " + str(int(getRejected('day' + str(day)))) + "\n")
 		f.write("----Hour breakdown----\n")
 		
 		#hour calculator
@@ -157,29 +173,58 @@ def createRep(name):
 	return monthlyAccAverage
 
 #gets total number of AU Validities
+#returns: (int) AU for an employee
 def getValidities(emp):
 	num = subprocess.check_output('grep "VALIDITY" ' + emp + ".txt | wc -l | bc", shell=True)
 	return int(num[:-1])
 
 #gets total number of non billables
+#returns: (int) Not billable for an employee
 def getNonBillables(emp):
 	num = subprocess.check_output('grep "Not Billable" ' + emp + ".txt | wc -l | bc", shell=True)
 	return int(num[:-1])
 
-#gets total number of Tox samples rejected
-def getRejected(emp):
-	num = subprocess.check_output('grep "Rejected" ' + emp + ".txt | wc -l | bc", shell=True)
-	return int(num[:1])
-
 #gets total number of Tox samples
+#returns: (int) Tox samples for an employee
 def getTotalTox(emp):
 	num = subprocess.check_output('grep "Tox" ' + emp + ".txt | wc -l | bc", shell=True)
 	return float(num[:-1])
 
-#gets total number of Pgx samples
+#gets total number of PGx samples for en employee
+#returns: (int) PGx samples for an employee
 def getTotalPgx(emp):
 	num = subprocess.check_output('grep "PGx" ' + emp + ".txt | wc -l | bc", shell = True)
 	return int(num[:-1])
+
+#gets total number of mistakes for an employee
+#returns: (int) mistakes for an employee
+def getTotalMistakes(emp):
+	try:
+		num = subprocess.check_output('grep "' + emp + '" ' + mistakes_file + " | wc -l | bc", shell=True)
+		return int(num[:-1])
+	except Exception:
+		return 0
+
+#gets all tox, pgx, AU Validity
+#returns: (int) tox + pgx + AU
+def getAllAcc():
+	num1 = subprocess.check_output('grep "VALIDITY" ' + report_file + " | wc -l | bc", shell=True)
+	numAU = int(num1[:-1])
+	num2 = subprocess.check_output('grep "Tox" ' + report_file + " | wc -l | bc", shell=True)
+	numTox = int(num2[:-1])
+	num3 = subprocess.check_output('grep "PGx" ' + report_file + " | wc -l | bc", shell=True)
+	numPgx = int(num3[:-1])
+	return numPgx + numTox + numAU
+
+#gets all mistakes form mistakes file
+#returns: (int) all entries in mistakes file
+def getAllMistakes():
+	try:
+		num = subprocess.check_output('wc -l ' + mistakes_file, shell=True)
+		return int(num[5:-(len(mistakes_file) + 2)])
+	except Exception:
+		print "The mistakes file was empty!"
+		return 0
 
 #file cleanup
 def delFiles():
@@ -187,6 +232,7 @@ def delFiles():
 		os.system("rm " + employee + ".txt")
 
 #gets number of hours an employee worked for a given day
+#returns: (int) hours spent accessioning
 def getHoursAcc(entries):
 	if (len(entries) == 0):
 		return 0;
@@ -209,7 +255,7 @@ def getHoursAcc(entries):
 	return ((endInt - startInt) + 1)
 
 #sorts employee day reqs by hour
-#returns: list of hours sorted
+#returns: (list) of hours sorted
 def sortByHour(reqs):
 	hours = []
 	for req in reqs:
@@ -220,6 +266,7 @@ def sortByHour(reqs):
 	return finalSorted
 
 #converts hours AM-PM to 24 hour clock
+#returns: (int) value on a 24 hour clock
 def hourConvert(hours):
 
 	convertedHours = []
