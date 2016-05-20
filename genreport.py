@@ -1,14 +1,14 @@
 ################################
 # Created by Austin Wentz      #
 # ESA Labs		       #
-# Last Updated: May 19th, 2016 #
+# Last Updated: May 20th, 2016 #
 ################################
 import os
 import subprocess
 from datetime import datetime
 
 #list of employees
-employees = ["AC" , "CJ", "CM", "DA", "DF", "JD", "JL", "JM", "QB", "RR", "SC", "TS", "TR", "TK"]
+employees = ["AC" , "CJ", "CM", "DA", "DF", "JD", "JL", "JM", "QB", "RR", "SC", "TK", "TR", "TS"]
 
 #files to be read from
 report_file = raw_input("Please enter the name of the file you would like the report to be generated on (ex. april.txt): ")
@@ -25,6 +25,9 @@ def genEmpReqs():
 #calls createRep() for every employee
 def genEmpReps():
 	monthlyAcc = []
+
+	print "Analyzing employee mistakes..."
+
 	mistakes = float(getAllMistakes())
 	allAcc = getAllAcc()
 	highestPerformingEmployee = "None"
@@ -39,6 +42,8 @@ def genEmpReps():
 	for employee in employees:
 		monthlyAcc.append(createRep(employee))
 	
+	print "Calculating employee stats..."
+
 	#finding the highest and lowest performing employee based on monthly accession averages
 	for employee in employees:
 		if (monthlyAcc[index] > highestAcc):
@@ -50,6 +55,8 @@ def genEmpReps():
 			lowestPerformingEmployee = employee
 		index = index + 1
 	
+	print "Writing monthly report file..."
+
 	#writing to Monthly_report.txt file
 	with open("Monthly_report.txt", 'a') as repFile:
 		repFile.write('---------------------\n')
@@ -95,7 +102,7 @@ def createRep(name):
 
 	DaysWorked = []
 
-	#day Breakdown
+	#day breakdown
 	for day in range(1,32):
 		
 		if(day < 10):
@@ -229,6 +236,8 @@ def getAllMistakes():
 
 #file cleanup
 def delFiles():
+	print "Cleaning up files..."
+
 	for employee in employees:
 		os.system("rm " + employee + ".txt")
 
