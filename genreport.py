@@ -4,15 +4,25 @@
 # Last Updated: May 20th, 2016 #
 ################################
 import os
+import sys
 import subprocess
 from datetime import datetime
 
 #list of employees
-employees = ["AC" , "CJ", "CM", "DA", "DF", "JD", "JL", "JM", "QB", "RR", "SC", "TK", "TR", "TS"]
+employees = ["AC", "CJ", "CM", "DA", "DF", "JD", "JL", "JM", "QB", "RR", "SC", "TK", "TR", "TS"]
+
+#defining months of the year
+monthsOfTheYear = {'01': 'January', '02': 'February', '03': 'March', '04': 'April', '05': 'May', '06': 'June', '07': 'July', '08': 'August', '09': 'September', '10': 'October', '11': 'November', '12': 'December'}
 
 #files to be read from
-report_file = raw_input("Please enter the name of the file you would like the report to be generated on (ex. april.txt): ")
-mistakes_file = raw_input("Please enter name of mistakes file associated with the report file (ex. mistakes.txt), if you dont have one type 'none': ")
+if (len(sys.argv) == 2):
+	report_file = sys.argv[1]
+elif (len(sys.argv) == 3):
+	report_file = sys.argv[1]
+	mistakes_file = sys.argv[2]
+else:
+	print "Please enter the correct format: python genreport.py <report_file.txt> <mistakes_file.txt(optional)>"
+	sys.exit()
 
 #generates <employee>.txt files
 def genEmpReqs():
@@ -127,7 +137,7 @@ def createRep(name):
 			lines.append(line)
 
 		sortedLines = sortByHour(lines)
-
+		month = (lines[0])[0:2]
 		hoursAcc = getHoursAcc(sortedLines)
 		convertedHours = hourConvert(sortedLines)
 		samplesProcessed = float(len(lines))
@@ -139,7 +149,7 @@ def createRep(name):
 			averageAcc = 0
 		
 		checkedHours = {'5': 0, '6': 0, '7': 0, '8': 0, '9': 0, '10': 0, '11': 0, '12': 0, '13' : 0, '14': 0, '15': 0, '16': 0, '17': 0, '18': 0, '19': 0}
-
+		
 		#hour report analyzer
 		for con in convertedHours:
 			for key in checkedHours:
@@ -148,7 +158,7 @@ def createRep(name):
 		
 		#breaking it down by the hour	
 		f.write("\n")
-		f.write("/////Day " + str(day) + "/////\n")
+		f.write("/////" + monthsOfTheYear[month] + " " + str(day) + "/////\n")
 		f.write("Hours spent accessioning: " + str(hoursAcc) + "\n")
 		f.write("Samples processed: " + str(int(samplesProcessed)) + "\n")
 		f.write("Average number of samples processed per hour spent accessioning: " + str(averageAcc) + "\n")
