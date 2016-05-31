@@ -70,8 +70,8 @@ def genEmpReps():
 	#writing to Monthly_report.txt file
 	with open("Monthly_report.txt", 'a') as repFile:
 		repFile.write('---------------------\n')
-		repFile.write('The highest performing employee of the month based on average accessions per hour was ' + highestPerformingEmployee + ' with and average of ' + str(highestAcc) + ' samples proccesed per hour.\n')
-		repFile.write('The lowest performing employee of the month based on average accessions per hour was ' + lowestPerformingEmployee + ' with and average of ' + str(lowestAcc) + ' samples proccesed per hour.\n')
+		repFile.write('The highest performing employee of the month based on average accessions per hour was ' + highestPerformingEmployee + ' with and average of ' + str(highestAcc) + ' samples processed per hour.\n')
+		repFile.write('The lowest performing employee of the month based on average accessions per hour was ' + lowestPerformingEmployee + ' with and average of ' + str(lowestAcc) + ' samples processed per hour.\n')
 		repFile.write('---------------------\n')
 		repFile.write('Total mistakes made this month: ' + str(int(mistakes)) + '\n')
 		repFile.write('Total number of samples accessioned (AU + Tox + PGx): ' + str(allAcc) + '\n')
