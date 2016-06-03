@@ -9,7 +9,7 @@ import subprocess
 from datetime import datetime
 
 #list of employees
-employees = ["AC", "CJ", "CM", "DA", "DF", "JD", "JL", "JM", "QB", "RR", "SC", "TK", "TR", "TS"]
+employees = ["AC", "CJ", "CM", "DA", "JD", "JL", "JM", "LJ", "RR", "SC", "TK", "TR", "TS"]
 
 #defining months of the year
 monthsOfTheYear = {'01': 'January', '02': 'February', '03': 'March', '04': 'April', '05': 'May', '06': 'June', '07': 'July', '08': 'August', '09': 'September', '10': 'October', '11': 'November', '12': 'December'}
