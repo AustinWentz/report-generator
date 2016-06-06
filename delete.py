@@ -1,6 +1,6 @@
 import os
 
-employees = ["AC" , "CJ", "CM", "DA", "DF", "JD", "JL", "JM", "QB", "RR", "SC", "TS", "TR", "TK"]
+employees = ["AC", "CB", "CJ", "CM", "DA", "GM", "JD", "JL", "JM", "LJ", "RR", "SC", "TL", "TS", "TR", "TK"]
 
 print "Deleting employee and report files..."
 

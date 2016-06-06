@@ -1,7 +1,7 @@
 ################################
 # Created by Austin Wentz      #
 # ESA Labs		       #
-# Last Updated: June 3, 2016 #
+# Last Updated: June 6, 2016 #
 ################################
 import os
 import sys
@@ -9,7 +9,7 @@ import subprocess
 from datetime import datetime
 
 #list of employees
-employees = ["AC", "CJ", "CM", "DA", "JD", "JL", "JM", "LJ", "RR", "SC", "TK", "TR", "TS"]
+employees = ["AC", "CB", "CJ", "CM", "DA", "GM", "JD", "JL", "JM", "LJ", "RR", "SC", "TK", "TL", "TR", "TS"]
 
 #defining months of the year
 monthsOfTheYear = {'01': 'January', '02': 'February', '03': 'March', '04': 'April', '05': 'May', '06': 'June', '07': 'July', '08': 'August', '09': 'September', '10': 'October', '11': 'November', '12': 'December'}
