@@ -1,7 +1,7 @@
 ################################
 # Created by Austin Wentz      #
 # ESA Labs		       #
-# Last Updated: June 6, 2016 #
+# Last Updated: June 6, 2016   #
 ################################
 import os
 import sys
