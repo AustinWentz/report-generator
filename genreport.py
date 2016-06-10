@@ -1,7 +1,7 @@
 ################################
 # Created by Austin Wentz      #
 # ESA Labs		       #
-# Last Updated: June 6, 2016   #
+# Last Updated: June 10, 2016   #
 ################################
 import os
 import sys
@@ -75,7 +75,9 @@ def genEmpReps():
 		repFile.write('---------------------\n')
 		repFile.write('Total mistakes made this month: ' + str(int(mistakes)) + '\n')
 		repFile.write('Total number of samples accessioned (AU + Tox + PGx): ' + str(allAcc) + '\n')
-		
+		repFile.write('Total number of Tox samples received: ' + str(getTotalToxReceived()) + '\n')
+		repFile.write('Total number of PGx samples received: ' + str(getTotalPGxReceived()) + '\n')	
+	
 		#writes mistake percentages
 		if (allAcc != 0):
 			repFile.write("Total percentage of samples that had mistakes: " + str((mistakes/allAcc) * 100) + "%\n")
@@ -212,6 +214,18 @@ def getTotalTox(emp):
 #returns: (int) PGx samples for an employee
 def getTotalPgx(emp):
 	num = subprocess.check_output('grep "PGx" ' + emp + ".txt | wc -l | bc", shell = True)
+	return int(num[:-1])
+
+#gets total number of Tox samples received
+#returns: (int) Tox samples recieved
+def getTotalToxReceived():
+	num = subprocess.check_output('grep "Tox Received" ' + report_file + ' | wc -l | bc', shell = True)
+	return int(num[:-1])
+
+#gets total number of PGx samples received
+#returns: (int) PGx samples recieved
+def getTotalPGxReceived():
+	num = subprocess.check_output('grep "PGx Received" ' + report_file + ' | wc -l | bc', shell = True)
 	return int(num[:-1])
 
 #gets total number of mistakes for an employee
