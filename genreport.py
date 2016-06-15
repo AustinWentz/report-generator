@@ -113,6 +113,8 @@ def createRep(name):
 	f.write("\n------Day breakdown------\n")
 
 	DaysWorked = []
+	totalHours = {'5': 0, '6': 0, '7': 0, '8': 0, '9': 0, '10': 0, '11': 0, '12': 0, '13' : 0, '14': 0, '15': 0, '16': 0, '17': 0, '18': 0, '19': 0}
+
 
 	#day breakdown
 	for day in range(1,32):
@@ -130,7 +132,7 @@ def createRep(name):
 			except Exception:
 				pass
 	dailyAccAverage = []
-
+ 
 	for day in DaysWorked:
 		lines = []
 		fDay = open('day' + str(day) + '.txt', 'rt')
@@ -168,10 +170,37 @@ def createRep(name):
 		
 		#hour calculator
 		for hour in range(5,20):
+
+			#new hour metrics
+			totalHours[str(hour)] = totalHours[str(hour)] + checkedHours[str(hour)]
+
 			if (hour <= 12):
 				f.write(str(hour) + " AM: " + str(checkedHours[str(hour)]) + "\n")
 			else:
 				f.write(str(hour - 12) + " PM: " + str(checkedHours[str(hour)]) + "\n")
+
+	f.write("\n////////// ADDITIONAL METRICS //////////\n")
+	f.write("\n----Total accessions by hour----\n")
+
+	#new metrics
+	for hour in range(5,20):
+
+		if (hour <= 12):
+			f.write(str(hour) + " AM: " + str(totalHours[str(hour)]) + "\n")
+		else:
+			f.write(str(hour - 12) + " PM: " + str(totalHours[str(hour)]) + "\n")
+	
+	f.write("\n----Accessions averages by hour----\n")
+	
+	
+	#new metrics
+	if (len(DaysWorked) != 0):
+		for hour in range(5,20):
+
+			if (hour <= 12):
+				f.write(str(hour) + " AM: " + str(totalHours[str(hour)] / float(len(DaysWorked))) + "\n")
+			else:
+				f.write(str(hour - 12) + " PM: " + str(totalHours[str(hour)] / float(len(DaysWorked))) + "\n")
 
 	#daily/monthly average	
 	sumOfAvg = 0.0
